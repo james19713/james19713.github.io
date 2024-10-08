@@ -1,7 +1,15 @@
-#button {
+#logo {
+  color:white;
+}
+#button1 {
+  width:400px;
+  height:50px; 
+  background-color:#5a73a7;
+}
+#button2 {
   width:100px;
   height:30px; 
-  background-color:blue;
+  background-color:#648de3;
 }
 #textButton {
   color:white;
