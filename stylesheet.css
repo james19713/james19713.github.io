@@ -1,3 +1,8 @@
-#buttons {
-  color:blue;
+#button {
+  width:100px;
+  height:30px; 
+  background-color:blue;
+}
+#textButton {
+  color:white;
 }
