@@ -1,34 +1,48 @@
 <!DOCTYPE html> 
 <link rel="stylesheet" href="stylesheet.css">
 <head> 
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Arimo:ital@0;1&display=swap" rel="stylesheet">
+  <font face="Arimo">
+    <center>
+      <br />
+      <br />
+      <div id="logoContent1">
+      <h1> James Burns' Projects</h1>
+      </div>
+      <br />
+      <div id="logoContent2">
+      <b>home</b> | <a href="#">about me </a>|<a href="#"> contact </a>|<a href="#"> resume </a>
+      </div>
+      <canvas id="grainCanvas"></canvas>
+      <script src="https://d3js.org/d3.v5.min.js"></script>
+<script>
+    var canvas = document.getElementById('grainCanvas');
+    var context = canvas.getContext('2d');
 
-<link rel="preconnect" href="https://fonts.googleapis.com"> <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin> <link href="https://fonts.googleapis.com/css2?family=Noto+Sans:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
-    <font face="Noto Sans">
-         <center>
-           <div id="button1">
-  <h1 id="logo">James Burns' Projects </h1>
-           </div>
-      <table> 
-      <tr> 
-      <th> 
-        <div id="button2">
-      <h3 id="textButton">resume </h3>
-          </div>
-      </th>
-        <th> 
-           <div id="button2">
-  <h3 id="textButton">LinkedIn</h3>
-             </div>
-      </th>
-        <th> 
-           <div id="button2">
-       <h3 id="textButton">Contact</h3>
-           </div>
-      </th>
-      </tr>
-      </table>
-    </div>
-      
-    <div id= "spacer">
-  </center>
-</head>
+    // Resize the canvas to fill the window
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+
+    // Create random points for the Voronoi diagram
+    var points = d3.range(100).map(function() { 
+        return [Math.random() * canvas.width, Math.random() * canvas.height];
+    });
+
+    // Generate the Voronoi diagram using d3-voronoi
+    var voronoi = d3.voronoi().extent([[0, 0], [canvas.width, canvas.height]]);
+    var diagram = voronoi(points);
+
+    // Draw the cells
+    diagram.polygons().forEach(function(cell) {
+        context.beginPath();
+        context.moveTo(cell[0][0], cell[0][1]);
+        cell.forEach(function(point) {
+            context.lineTo(point[0], point[1]);
+        });
+        context.closePath();
+        context.strokeStyle = "#000"; // Line color (black)
+        context.stroke(); // Draw the outline
+    });
+      </script>
