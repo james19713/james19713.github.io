@@ -1,16 +1,23 @@
-#logo {
-  color:white;
+a {
+  text-decoration:none;
+  color:black
 }
-#button1 {
-  width:400px;
-  height:50px; 
-  background-color:#5a73a7;
+a:hover {
+  text-decoration:none;
+  color:#385faf;
 }
-#button2 {
-  width:100px;
-  height:30px; 
-  background-color:#648de3;
+
+html, body {
+    height: 100%;
+    margin: 0;
 }
-#textButton {
-  color:white;
+
+#grainCanvas {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1; /* Place it behind content */
+    opacity: 0.08; /* Adjust this to make it faint */
 }
