@@ -19,5 +19,5 @@ html, body {
     width: 100%;
     height: 100%;
     z-index: -1; /* Place it behind content */
-    opacity: 0.08; /* Adjust this to make it faint */
+    opacity: 0.02; /* Adjust this to make it faint */
 }
