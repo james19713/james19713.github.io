@@ -1,46 +1,286 @@
-<!DOCTYPE html> 
-<link rel="stylesheet" href="stylesheet.css">
-<head> 
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>James Burns — Portfolio</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Arimo:ital@0;1&display=swap" rel="stylesheet">
-  <font face="Arimo">
-    <center>
-      <br />
-      <br />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Arimo:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --bg:#0e0f12; --fg:#e8e8ea; --muted:#a9acb3; --brand:#7cc4ff; --accent:#7cffd4; --card:#17181d; --border:#262830;
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0; font-family: "Arimo", system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; color:var(--fg); background:var(--bg);
+      line-height:1.6; overflow-x:hidden;
+    }
+    a{color:var(--brand); text-decoration:none}
+    a:hover{text-decoration:underline}
 
-      <h1> James Burns' Projects</h1>
+    /* Header */
+    header{
+      position:fixed; top:0; left:0; right:0; z-index:10;
+      backdrop-filter:saturate(1.2) blur(8px);
+      background:color-mix(in lab, var(--bg) 75%, transparent);
+      border-bottom:1px solid var(--border);
+    }
+    .nav{max-width:1100px; margin:0 auto; display:flex; gap:20px; align-items:center; justify-content:space-between; padding:14px 20px}
+    .brand{display:flex; gap:10px; align-items:center; font-weight:700; letter-spacing:.2px}
+    .brand .dot{width:8px; height:8px; border-radius:50%; background:linear-gradient(135deg, var(--brand), var(--accent)); box-shadow:0 0 12px color-mix(in srgb, var(--brand), transparent 40%)}
+    .nav a{color:var(--fg); opacity:.9}
+    .nav a:hover{opacity:1}
+    .links{display:flex; gap:16px; align-items:center}
+    .cta{padding:8px 14px; border-radius:14px; border:1px solid var(--border); background:linear-gradient(180deg, #1a1c22, #121319);}
+    .cta:hover{border-color:color-mix(in srgb, var(--brand), var(--border) 60%); text-decoration:none}
 
-      <br />
-      <b>home</b> | <a href="#">about me </a>|<a href="#"> contact </a>|<a href="#"> resume </a>
+    /* Hero */
+    .hero{position:relative; padding:120px 20px 64px; min-height:68vh; display:grid; place-items:center}
+    .hero-inner{max-width:1100px; width:100%; display:grid; grid-template-columns:1.05fr .95fr; gap:28px}
+    @media (max-width:900px){.hero-inner{grid-template-columns:1fr; gap:20px}}
+    .tag{display:inline-flex; align-items:center; gap:8px; font-size:12px; color:var(--muted); padding:6px 10px; border:1px solid var(--border); border-radius:999px; background:#121319}
+    h1{margin:12px 0 10px; font-size: clamp(32px, 4.2vw, 54px); line-height:1.06}
+    .lead{color:var(--muted); font-size: clamp(16px, 1.6vw, 18px)}
+    .buttons{margin-top:18px; display:flex; gap:12px; flex-wrap:wrap}
+    .btn{padding:10px 14px; border-radius:12px; border:1px solid var(--border); background:#15171d; color:var(--fg)}
+    .btn:hover{border-color:var(--brand); text-decoration:none}
+
+    /* Canvas backdrop */
+    #grainCanvas{position:absolute; inset:0; z-index:-1; width:100%; height:100%; display:block}
+    .overlay{position:absolute; inset:0; background:radial-gradient(1200px 600px at 70% -10%, color-mix(in srgb, var(--brand), transparent 80%), transparent 70%), radial-gradient(800px 400px at 10% 110%, color-mix(in srgb, var(--accent), transparent 85%), transparent 70%)}
+
+    /* Sections */
+    section{max-width:1100px; margin:0 auto; padding:54px 20px}
+    .section-title{font-size:24px; margin-bottom:18px}
+    .muted{color:var(--muted)}
+
+    /* Projects */
+    .grid{display:grid; grid-template-columns:repeat(12,1fr); gap:18px}
+    .card{grid-column: span 6; background:var(--card); border:1px solid var(--border); border-radius:16px; padding:18px; transition:transform .25s ease, box-shadow .25s ease; position:relative; overflow:hidden}
+    .card:hover{transform:translateY(-3px); box-shadow:0 12px 28px rgba(0,0,0,.25)}
+    .card h3{margin:4px 0 8px}
+    .card p{color:var(--muted); margin:0 0 10px}
+    .chip{display:inline-flex; gap:6px; align-items:center; border:1px solid var(--border); padding:4px 8px; border-radius:999px; font-size:12px; color:var(--muted)}
+    .chips{display:flex; flex-wrap:wrap; gap:8px; margin-top:8px}
+    .card a.more{display:inline-block; margin-top:10px; font-weight:600}
+    @media (max-width:900px){.card{grid-column: span 12}}
+
+    /* Experience */
+    .timeline{border-left:2px solid var(--border); padding-left:16px}
+    .tl-item{position:relative; margin-bottom:18px}
+    .tl-item::before{content:""; position:absolute; left:-10px; top:6px; width:10px; height:10px; background:linear-gradient(135deg, var(--brand), var(--accent)); border-radius:50%}
+    .tl-role{font-weight:600}
+    .tl-meta{font-size:13px; color:var(--muted)}
+
+    footer{border-top:1px solid var(--border); padding:34px 20px; text-align:center; color:var(--muted)}
+  </style>
+</head>
+<body>
+  <header>
+    <nav class="nav">
+      <div class="brand"><span class="dot"></span> James Burns, EIT</div>
+      <div class="links">
+        <a href="#about">About</a>
+        <a href="#projects">Projects</a>
+        <a href="#experience">Experience</a>
+        <a href="#contact">Contact</a>
+        <a class="cta" href="#resume" onclick="alert('Add your PDF resume link here.')">Resume</a>
+      </div>
+    </nav>
+  </header>
+
+  <main>
+    <!-- Hero -->
+    <section class="hero" aria-label="Intro">
       <canvas id="grainCanvas"></canvas>
-      <script src="https://d3js.org/d3.v5.min.js"></script>
-<script>
-    var canvas = document.getElementById('grainCanvas');
-    var context = canvas.getContext('2d');
+      <div class="overlay" aria-hidden="true"></div>
+      <div class="hero-inner">
+        <div>
+          <span class="tag">Computational Materials • Energy Systems • MSME @ SDSU</span>
+          <h1>Mechanical engineer focused on <span style="color:var(--brand)">computational microstructures</span> and <span style="color:var(--accent)">advanced batteries</span>.</h1>
+          <p class="lead">I build tools that simulate grain boundary serrations, study stress localization in microstructures, and prototype energy systems. I also enjoy clean, pragmatic code and clear visualizations.</p>
+          <div class="buttons">
+            <a class="btn" href="#projects">See Projects</a>
+            <a class="btn" href="#contact">Get in Touch</a>
+          </div>
+        </div>
+        <div>
+          <div class="card" style="grid-column:span 12; min-height:220px">
+            <h3>Featured: Interactive Voronoi Backdrop</h3>
+            <p class="muted">The page background is generated with a custom <code>d3.voronoi</code> renderer. Points subtly drift to give a living-material feel—an homage to serrated grain boundaries.</p>
+            <div class="chips">
+              <span class="chip">HTML5 Canvas</span>
+              <span class="chip">D3.js</span>
+              <span class="chip">Voronoi</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
 
-    // Resize the canvas to fill the window
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
+    <!-- About -->
+    <section id="about">
+      <h2 class="section-title">About</h2>
+      <p class="muted">I’m James Burns, EIT — a mechanical engineer based in San Diego. I’m pursuing an MSME at SDSU while researching multiscale modeling of materials (serrated grain boundaries, stress localization) and battery systems (Li–O₂ / Na‑ion concepts).</p>
+    </section>
 
-    // Create random points for the Voronoi diagram
-    var points = d3.range(100).map(function() { 
-        return [Math.random() * canvas.width, Math.random() * canvas.height];
-    });
+    <!-- Projects -->
+    <section id="projects">
+      <h2 class="section-title">Projects</h2>
+      <div class="grid">
+        <!-- Project 1 -->
+        <article class="card">
+          <h3>Serrated Grain Generator (MATLAB → DXF)</h3>
+          <p>Wrote <code>simpsons.m</code>, a Voronoi-based generator that pairs parallel edges and applies band-limited serrations; exports clean DXF for FEA/CAD. Tunable amplitude and edge selection enable realistic serration statistics for downstream meshing.</p>
+          <div class="chips">
+            <span class="chip">MATLAB</span>
+            <span class="chip">Computational Geometry</span>
+            <span class="chip">DXF Export</span>
+          </div>
+          <a class="more" href="#" onclick="alert('Hook this to your GitHub repo or a Gist for simpsons.m')">View Code →</a>
+        </article>
 
-    // Generate the Voronoi diagram using d3-voronoi
-    var voronoi = d3.voronoi().extent([[0, 0], [canvas.width, canvas.height]]);
-    var diagram = voronoi(points);
+        <!-- Project 2 -->
+        <article class="card">
+          <h3>Stress Localization Study in Serrated Boundaries</h3>
+          <p>Designed COMSOL workflows to compare serrated vs. smooth grain boundaries. Implemented edge datasets + cut-line evaluations to quantify peak/average stress through serrations; explored material contrast between grains and intergranular films.</p>
+          <div class="chips">
+            <span class="chip">COMSOL</span>
+            <span class="chip">FEA</span>
+            <span class="chip">Post‑Processing</span>
+          </div>
+          <a class="more" href="#" onclick="alert('Link to a PDF or images of your COMSOL plots')">Plots & Notes →</a>
+        </article>
 
-    // Draw the cells
-    diagram.polygons().forEach(function(cell) {
-        context.beginPath();
-        context.moveTo(cell[0][0], cell[0][1]);
-        cell.forEach(function(point) {
-            context.lineTo(point[0], point[1]);
-        });
-        context.closePath();
-        context.strokeStyle = "#000"; // Line color (black)
-        context.stroke(); // Draw the outline
-    });
-      </script>
+        <!-- Project 3 -->
+        <article class="card">
+          <h3>Li–O₂ Drone Power Model (Senior Design)</h3>
+          <p>Analyzed power draw vs. capacity for a micro‑drone system (21.8 g airframe, ~1.89 A @ 3.7 V). Built an energy budget model and compared chemistries; documented tradeoffs in specific energy, safety, and cycle behavior.</p>
+          <div class="chips">
+            <span class="chip">Energy Systems</span>
+            <span class="chip">Modeling</span>
+            <span class="chip">Technical Writing</span>
+          </div>
+          <a class="more" href="#" onclick="alert('Attach your report or poster PDF')">Read Report →</a>
+        </article>
+
+        <!-- Project 4 -->
+        <article class="card">
+          <h3>Voronoi Canvas Library (This Site)</h3>
+          <p>Lightweight canvas module that renders and animates Voronoi cells with crisp strokes and adaptive resolution; supports resize, pointer focus, and seeded pseudo‑random streams for reproducible microstructures.</p>
+          <div class="chips">
+            <span class="chip">JavaScript</span>
+            <span class="chip">D3</span>
+            <span class="chip">HTML5 Canvas</span>
+          </div>
+          <a class="more" href="#" onclick="alert('Split this into its own repo as a micro-lib')">Source Soon →</a>
+        </article>
+      </div>
+    </section>
+
+    <!-- Experience -->
+    <section id="experience">
+      <h2 class="section-title">Experience</h2>
+      <div class="timeline">
+        <div class="tl-item">
+          <div class="tl-role">Graduate Research — Multiscale Modeling of Materials, SDSU</div>
+          <div class="tl-meta">2025 — Present • San Diego, CA</div>
+          <p class="muted">Computational microstructures, serrated grain boundaries, stress quantification, tooling for clean geometry export and analysis.</p>
+        </div>
+        <div class="tl-item">
+          <div class="tl-role">Electrochemical Energy Lab — Undergraduate Research</div>
+          <div class="tl-meta">2024 — 2025 • San Diego, CA</div>
+          <p class="muted">Li‑O₂ concepts, Na‑ion literature synthesis, CAD/FEA support, experimental documentation.</p>
+        </div>
+        <div class="tl-item">
+          <div class="tl-role">Rivian & Tesla — Showroom / Customer Experience (Part‑time)</div>
+          <div class="tl-meta">2024 — 2025 • SoCal</div>
+          <p class="muted">Technical communication, EV education, process documentation; sharpened product storytelling and customer‑centric design thinking.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Contact -->
+    <section id="contact">
+      <h2 class="section-title">Contact</h2>
+     <p>Email: <a href="mailto:james@example.com">james@example.com</a> · LinkedIn: <a href="#" onclick="alert('Add your LinkedIn profile URL')">Profile</a> · GitHub: <a href="#" onclick="alert('Add your GitHub URL')">@jburns</a></p>
+    </section>
+  </main>
+
+  <footer>
+    <small>© <span id="year"></span> James Burns. Built with HTML, CSS, and a dash of D3.</small>
+  </footer>
+
+  <!-- Scripts -->
+  <script src="https://d3js.org/d3.v5.min.js"></script>
+  <script>
+    // Year
+    document.getElementById('year').textContent = new Date().getFullYear();
+
+    // Voronoi Canvas Backdrop
+    (function(){
+      const canvas = document.getElementById('grainCanvas');
+      const ctx = canvas.getContext('2d');
+      let points = [], diagram, width, height, raf, jitter=0.35;
+
+      function resize(){
+        width = canvas.width = canvas.offsetWidth; // CSS-driven sizing
+        height = canvas.height = canvas.offsetHeight;
+        seed(); draw();
+      }
+
+      function seed(n){
+        const count = n || (Math.min(180, Math.max(90, Math.floor((width*height)/12000))));
+        points = d3.range(count).map(() => ({
+          x: Math.random()*width,
+          y: Math.random()*height,
+          vx: (Math.random()-0.5)*jitter,
+          vy: (Math.random()-0.5)*jitter
+        }));
+        compute();
+      }
+
+      function compute(){
+        const vor = d3.voronoi().extent([[0,0],[width,height]]);
+        diagram = vor(points.map(p=>[p.x,p.y]));
+      }
+
+      function step(){
+        // gentle drift
+        for(const p of points){
+          p.x += p.vx; p.y += p.vy;
+          if(p.x<0||p.x>width) p.vx*=-1;
+          if(p.y<0||p.y>height) p.vy*=-1;
+        }
+        compute(); draw();
+        raf = requestAnimationFrame(step);
+      }
+
+      function draw(){
+        ctx.clearRect(0,0,width,height);
+        ctx.lineWidth = 0.75; ctx.strokeStyle = '#2a2d36';
+        for(const poly of diagram.polygons()){
+          if(!poly) continue;
+          ctx.beginPath();
+          ctx.moveTo(poly[0][0], poly[0][1]);
+          for(let i=1;i<poly.length;i++) ctx.lineTo(poly[i][0], poly[i][1]);
+          ctx.closePath();
+          ctx.stroke();
+        }
+      }
+
+      const ro = new ResizeObserver(resize); ro.observe(canvas);
+      resize();
+      step();
+
+      // Accessibility: pause on tab switch
+      document.addEventListener('visibilitychange', ()=>{
+        if(document.hidden){ cancelAnimationFrame(raf); }
+        else { step(); }
+      });
+    })();
+  </script>
+</body>
+</html>
